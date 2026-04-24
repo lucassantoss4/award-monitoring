@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
+venv/
+ENV/
+
+# Flask/Env
+.env
+.flaskenv
+
+# Project specific
+data/entrada_pdfs/*
+data/saida_json/*
+data/logs/*
+!data/entrada_pdfs/.gitkeep
+!data/saida_json/.gitkeep
+!data/logs/.gitkeep
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,20 @@
+# --- Web Server (Flask) ---
+flask
+
+# --- Manipulação de Dados ---
+pandas
+openpyxl
+python-dotenv
+
+# --- Web Scraping & Navegador ---
+crawl4ai
+playwright
+
+# --- Leitura de PDF & IA ---
+docling
+
+# --- Automação Windows (Outlook) ---
+pywin32
+
+# --- Agendamento de Tarefas ---
+apscheduler
