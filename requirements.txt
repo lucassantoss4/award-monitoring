@@ -1,5 +1,6 @@
 # --- Web Server (Flask) ---
 flask
+gunicorn
 
 # --- Manipulação de Dados ---
 pandas
@@ -14,7 +15,7 @@ playwright
 docling
 
 # --- Automação Windows (Outlook) ---
-pywin32
+# pywin32  # Descomente se estiver rodando em Windows com Outlook
 
 # --- Agendamento de Tarefas ---
 apscheduler

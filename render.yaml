@@ -1,0 +1,23 @@
+# render.yaml - Configuração de deploy automático no Render
+# Docs: https://render.com/docs/blueprint-spec
+
+services:
+  - type: web
+    name: award-monitoring
+    runtime: python
+    plan: free
+    buildCommand: |
+      pip install -r requirements.txt
+      playwright install chromium --with-deps || true
+    startCommand: gunicorn run:app --bind 0.0.0.0:$PORT --workers 2 --timeout 120
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: API_KEY
+        generateValue: true
+      - key: PYTHON_VERSION
+        value: "3.11"
+      - key: EMAIL_DESTINATARIOS
+        value: ""
+      - key: POWER_AUTOMATE_WEBHOOK_URL
+        value: ""
