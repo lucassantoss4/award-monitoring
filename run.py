@@ -3,12 +3,18 @@ from core.pipeline.pipeline_manager import Pipeline
 from apscheduler.schedulers.background import BackgroundScheduler
 import atexit
 import logging
+# from app.tasks import criar_indices_elasticsearch  # Importa a nova função
 
 # Configura logs para aparecerem no terminal
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("Scheduler")
 
 app = create_app()
+
+# Executa a criação dos índices ao iniciar o site
+# print("🔧 Verificando e criando índices do Elasticsearch...")
+# criar_indices_elasticsearch()
+# print("✅ Elasticsearch pronto!")
 
 def job_scanner_automatico():
     """

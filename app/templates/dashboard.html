@@ -214,7 +214,7 @@
                     {% for item in oportunidades %}
                     <div class="col-md-4 searchable-item" data-search="{{ item.titulo }} {{ item.resumo }}"
                         data-status="{{ 'ativo' if item.status == 'ABERTO' else 'inativo' }}"
-                        data-custo="{{ 'gratuito' if 'Gratuito' in item.custo else 'pago' }}">
+                        data-custo="{{ 'gratuito' if 'Gratuito' in (item.custo|default('')) else 'pago' }}">
 
                         <div class="tech-card">
                             <img src="{{ item.logo_bg or '/static/images/default.png' }}" class="card-watermark"
@@ -260,22 +260,21 @@
                 <div class="row g-4">
                     {% for evento in eventos %}
                     <div class="col-md-4 searchable-item"
-                        data-search="{{ evento.nome }} {{ evento.localizacao.cidade }} {{ evento.areas_foco|join(' ') }}"
-                        data-status="{{ 'ativo' if evento.data_status == 'confirmada' else 'inativo' }}"
-                        data-custo="{{ 'gratuito' if 'gratuito' in evento.custo|lower else 'pago' }}">
+                        data-search="{{ evento.nome }} {{ (evento.localizacao.cidade if evento.localizacao else '') }} {{ (evento.areas_foco|join(' ') if evento.areas_foco else '') }}"
+                        data-status="{{ 'ativo' if (evento.data_status == 'confirmada' or evento.status == 'ABERTO') else 'inativo' }}"
+                        data-custo="{{ 'gratuito' if 'gratuito' in (evento.custo|default('')|lower) else 'pago' }}">
 
                         <div class="tech-card d-flex flex-column justify-content-between">
                             <div>
                                 <div class="d-flex justify-content-between align-items-center mb-3">
                                     {% if evento.data_status == 'confirmada' %}
                                     <span class="badge-custom badge-corporate"><i class="ph ph-calendar-blank"></i> {{
-                                        evento.data_inicio[-2:] }}/{{ evento.data_inicio[5:7] }}/{{
-                                        evento.data_inicio[:4] }}</span>
+                                        evento.data_display }}</span>
                                     {% else %}
                                     <span class="badge-custom badge-warning"><i class="ph ph-clock"></i> A
                                         Confirmar</span>
                                     {% endif %}
-                                    <span class="badge-custom badge-platinum">{{ evento.localizacao.estado }}</span>
+                                    <span class="badge-custom badge-platinum">{{ (evento.localizacao.estado if evento.localizacao else 'BR') }}</span>
                                 </div>
 
                                 <h5 class="fw-bold mb-2" style="font-size: 1.1rem; color: var(--text-main);">{{
@@ -283,11 +282,13 @@
 
                                 <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">
                                     <i class="ph ph-map-pin"></i>
-                                    {% if evento.localizacao.formato == 'online' %}
+                                    {% if evento.localizacao and evento.localizacao.formato == 'online' %}
                                     Evento Online
-                                    {% else %}
+                                    {% elif evento.localizacao %}
                                     {{ evento.localizacao.cidade }} {% if evento.localizacao.local %} • {{
                                     evento.localizacao.local }} {% endif %}
+                                    {% else %}
+                                    Local a definir
                                     {% endif %}
                                 </p>
 
@@ -415,8 +416,8 @@
                                 {% endfor %}
                                 {% for item in eventos %}
                                 <tr class="searchable-item" data-search="{{ item.nome }}"
-                                    data-status="{{ 'ativo' if item.data_status == 'confirmada' else 'inativo' }}"
-                                    data-custo="{{ 'gratuito' if 'gratuito' in item.custo|lower else 'pago' }}">
+                                    data-status="{{ 'ativo' if (item.data_status == 'confirmada' or item.status == 'ABERTO') else 'inativo' }}"
+                                    data-custo="{{ 'gratuito' if 'gratuito' in (item.custo|default('')|lower) else 'pago' }}">
 
                                     <td class="fw-medium">
                                         <div class="d-flex align-items-center gap-2"><span
@@ -428,9 +429,7 @@
                                             item.nome }}
                                         </div>
                                     </td>
-                                    <td style="font-family: var(--font-mono);">{% if item.data_status == 'confirmada'
-                                        %}{{ item.data_inicio[-2:] }}/{{ item.data_inicio[5:7] }}/{{
-                                        item.data_inicio[:4] }}{% else %}A Definir{% endif %}</td>
+                                    <td style="font-family: var(--font-mono);">{{ item.data_display }}</td>
                                     <td><span class="badge-custom badge-corporate"><i class="ph ph-calendar-check"></i>
                                             Agendado</span></td>
                                     <td><span class="badge-custom badge-warning"><i class="ph ph-coins"></i> {{

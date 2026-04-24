@@ -67,7 +67,56 @@ def carregar_eventos_tech():
         try:
             with open(arquivo, 'r', encoding='utf-8') as f:
                 data = json.load(f)
-                return data.get("eventos", [])
+                eventos = data.get("eventos", [])
+                
+                # --- NORMALIZAÇÃO DOS DADOS ---
+                eventos_normalizados = []
+                for e in eventos:
+                    # Garante que áreas de foco seja uma lista
+                    areas = e.get("areas_foco") or e.get("area_foco") or []
+                    if isinstance(areas, str): areas = [areas]
+                    
+                    # Trata a localização
+                    local_raw = e.get("local", "Brasil")
+                    cidade, estado = "Brasil", "BR"
+                    if "/" in local_raw:
+                        partes = local_raw.split("/")
+                        cidade = partes[0].strip()
+                        estado = partes[1].strip()
+                    elif local_raw.lower() == "online":
+                        cidade = "Online"
+                        estado = "Global"
+                    
+                    localizacao = e.get("localizacao") or {
+                        "cidade": cidade,
+                        "estado": estado,
+                        "local": local_raw,
+                        "formato": "online" if local_raw.lower() == "online" else "presencial"
+                    }
+                    
+                    # Trata data de exibição
+                    data_raw = e.get("data_inicio") or e.get("data") or "A definir"
+                    data_display = data_raw
+                    if isinstance(data_raw, str) and len(data_raw) == 10 and data_raw[4] == "-" and data_raw[7] == "-":
+                        # Formato YYYY-MM-DD -> DD/MM/YYYY
+                        data_display = f"{data_raw[8:]}/{data_raw[5:7]}/{data_raw[:4]}"
+                    
+                    # Normaliza o objeto evento
+                    evento_norm = {
+                        "nome": e.get("nome", "Evento sem nome"),
+                        "data_inicio": data_raw,
+                        "data_display": data_display,
+                        "data_status": e.get("data_status") or "confirmada",
+                        "localizacao": localizacao,
+                        "areas_foco": areas,
+                        "ia_foco_principal": e.get("ia_foco_principal", False),
+                        "publico_alvo": e.get("publico_alvo", "Tech"),
+                        "custo": e.get("custo", "A consultar"),
+                        "link": e.get("link", "#")
+                    }
+                    eventos_normalizados.append(evento_norm)
+                
+                return eventos_normalizados
         except Exception as e:
             print(f"Erro ao ler eventos: {e}")
             return []

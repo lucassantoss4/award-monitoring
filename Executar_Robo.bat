@@ -5,18 +5,15 @@ echo      AWARD MONITORING DASHBOARD (FLASK SERVER)
 echo ========================================================
 echo.
 
-:: 1. Navegar até a pasta do script
+:: 1. Navegar ate a pasta do script
 cd /d "%~dp0"
 
-:: 2. Verificar/Ativar o Ambiente Virtual (opcional, se usar venv local)
+:: 2. Verificar/Ativar o Ambiente Virtual
 if exist .venv\Scripts\activate (
     call .venv\Scripts\activate
 ) else (
-    echo [AVISO] Ambiente virtual .venv não encontrado. Usando Python global...
+    echo [AVISO] Ambiente virtual .venv nao encontrado. Tentando rodar com Python global...
 )
-
-:: Instalar dependências se necessário (opcional, mas ajuda a evitar erros)
-:: pip install -r requirements.txt
 
 :: 3. Iniciar o Servidor Web
 echo.
@@ -27,5 +24,7 @@ echo.
 :: Abre o navegador automaticamente
 start http://127.0.0.1:5000
 
-:: Roda o Flask
+:: Roda o Flask via run.py
 python run.py
+
+pause
